@@ -36,6 +36,16 @@ planner_agent = Agent(
     llm=llm
 )
 
+# Define Crop Suggestion Agent
+crop_suggestion_agent = Agent(
+    role='Crop Suggestion Agent',
+    goal='Suggest alternative crops if the entered crop is out of season',
+    backstory='An agent specialized in suggesting alternative crops based on seasonality and profitability.',
+    verbose=True,
+    allow_delegation=False,
+    llm=llm
+)
+
 # Define Task for gathering planting information from the farmer
 planting_info_task = Task(
     description='Gather planting information from the farmer: {plant}',
@@ -64,6 +74,13 @@ season_check_task = Task(
     expected_output='Planting season status checked.'
 )
 
+# Define Task for suggesting alternative crops
+crop_suggestion_task = Task(
+    description='Suggest alternative crops if {crop} is out of season for {location} by {current_date}.',
+    agent=crop_suggestion_agent,
+    expected_output='Alternative crops suggested.'
+)
+
 # Define Task for displaying farming itinerary
 farming_itinerary_task = Task(
     description='Display farming itinerary for {crop} in {location} starting from {start_date}.',
@@ -73,8 +90,8 @@ farming_itinerary_task = Task(
 
 # Create a Crew for managing the farming process
 farming_crew = Crew(
-    agents=[farmer_agent, agronomist_agent, planner_agent],
-    tasks=[planting_info_task, farming_advice_task, farming_calendar_task, season_check_task, farming_itinerary_task],
+    agents=[farmer_agent, agronomist_agent, planner_agent, crop_suggestion_agent],
+    tasks=[planting_info_task, farming_advice_task, farming_calendar_task, season_check_task, crop_suggestion_task, farming_itinerary_task],
     verbose=True,
     process=Process.sequential
 )
@@ -101,7 +118,7 @@ if st.button("Submit"):
             farming_calendar_task.interpolate_inputs({"crop": crop, "location": location, "start_date": start_date})
             current_date = datetime.date.today()
             season_check_task.interpolate_inputs({"crop": crop, "location": location, "current_date": current_date})
-            farming_itinerary_task.interpolate_inputs({"crop": crop, "location": location, "start_date": start_date})
+            crop_suggestion_task.interpolate_inputs({"crop": crop, "location": location, "current_date": current_date})
 
             # Execute the farming crew
             st.write("Executing farming tasks...")
@@ -119,5 +136,6 @@ if st.button("Submit"):
                 st.error("There was an error generating the farming calendar. Please try again later.")
         except ValueError:
             st.error("Invalid input. Please enter valid values.")
+
 
 
