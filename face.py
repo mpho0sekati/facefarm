@@ -86,7 +86,7 @@ st.title("Farming Assistant")
 # Conversation window
 st.subheader("AI Conversation")
 conversation_key = "conversation_text_area"
-conversation = st.text_area("Conversation", "", height=200, key=conversation_key)
+conversation = st.text_area("Conversation", "", height=200, key=f"{conversation_key}_main")
 
 # Gather planting information from the farmer
 st.write("\nPlease provide some information about your farming plans:")
@@ -126,4 +126,5 @@ if st.button("Submit"):
         except ValueError:
             conversation += "\nAI: Invalid date format. Please enter the date in YYYY-MM-DD format."
 
-st.text_area("Conversation", conversation, height=200, key=conversation_key)
+st.text_area("Conversation", conversation, height=200, key=f"{conversation_key}_second")
+
