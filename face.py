@@ -1,3 +1,4 @@
+#AIzaSyDjITo6JpwACzQKlMCJKuBhHHK8jTQIhBg
 import streamlit as st
 import datetime
 from crewai import Agent, Task, Crew, Process
@@ -82,6 +83,10 @@ farming_crew = Crew(
 # Streamlit App
 st.title("Farming Assistant")
 
+# Conversation window
+st.subheader("AI Conversation")
+conversation = st.text_area("Conversation", "", height=200)
+
 # Gather planting information from the farmer
 st.write("\nPlease provide some information about your farming plans:")
 location = st.text_input("Enter your location: ")
@@ -89,23 +94,35 @@ crop = st.text_input("Enter the crop you want to plant: ")
 start_date_input = st.text_input("Enter the date you want to start planting (YYYY-MM-DD): ")
 
 if st.button("Submit"):
-    start_date = datetime.datetime.strptime(start_date_input, "%Y-%m-%d").date()
-    st.write("\nThank you for providing the information.")
-
-    # Interpolate farmer's planting information into the tasks descriptions
-    planting_info_task.interpolate_inputs({"plant": crop})
-    farming_advice_task.interpolate_inputs({"crop": crop, "location": location, "start_date": start_date})
-    farming_calendar_task.interpolate_inputs({"crop": crop, "location": location, "start_date": start_date})
-    current_date = datetime.date.today()
-    season_check_task.interpolate_inputs({"crop": crop, "location": location, "current_date": current_date})
-    farming_itinerary_task.interpolate_inputs({"crop": crop, "location": location, "start_date": start_date})
-
-    # Execute the farming crew
-    st.write("\nExecuting farming tasks...")
-    output = farming_crew.kickoff()
-
-    # Print output
-    if output:
-        st.write("\nFarming calendar generated successfully.")
+    if not location or not crop or not start_date_input:
+        st.error("Please fill out all fields.")
     else:
-        st.write("\nThere was an error generating the farming calendar. Please try again later.")
+        try:
+            start_date = datetime.datetime.strptime(start_date_input, "%Y-%m-%d").date()
+            conversation += "\nUser: Thank you for providing the information."
+
+            # Interpolate farmer's planting information into the tasks descriptions
+            planting_info_task.interpolate_inputs({"plant": crop})
+            farming_advice_task.interpolate_inputs({"crop": crop, "location": location, "start_date": start_date})
+            farming_calendar_task.interpolate_inputs({"crop": crop, "location": location, "start_date": start_date})
+            current_date = datetime.date.today()
+            season_check_task.interpolate_inputs({"crop": crop, "location": location, "current_date": current_date})
+            farming_itinerary_task.interpolate_inputs({"crop": crop, "location": location, "start_date": start_date})
+
+            # Execute the farming crew
+            conversation += "\nAI: Executing farming tasks..."
+            output = farming_crew.kickoff()
+
+            # Print output
+            if output:
+                conversation += "\nAI: Farming calendar generated successfully."
+                
+                # Display farming itinerary
+                farming_itinerary = farming_itinerary_task.output
+                conversation += f"\nAI: Farming Itinerary: {farming_itinerary}"
+            else:
+                conversation += "\nAI: There was an error generating the farming calendar. Please try again later."
+        except ValueError:
+            conversation += "\nAI: Invalid date format. Please enter the date in YYYY-MM-DD format."
+
+st.text_area("Conversation", conversation, height=200)
