@@ -121,13 +121,12 @@ if st.button("Submit"):
             crop_suggestion_task.interpolate_inputs({"crop": crop, "location": location, "current_date": current_date})
 
             # Execute the farming crew
-            st.write("Executing farming tasks...")
-
-            # Execute each task sequentially
-            for task in farming_crew.tasks:
-                st.write(f"Executing task: {task.description}")
-                task.execute()
-                st.success("Task completed successfully!")
+            with st.spinner("Executing farming tasks..."):
+                # Execute each task sequentially
+                for task in farming_crew.tasks:
+                    st.write(f"Executing task: {task.description}")
+                    task.execute()
+                    st.success("Task completed successfully!")
             
             # Display farming itinerary
             farming_itinerary = farming_itinerary_task.output
