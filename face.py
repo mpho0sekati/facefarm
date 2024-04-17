@@ -1,4 +1,3 @@
-
 import streamlit as st
 import datetime
 from crewai import Agent, Task, Crew, Process
@@ -83,11 +82,6 @@ farming_crew = Crew(
 # Streamlit App
 st.title("Farming Assistant")
 
-# Conversation window
-st.subheader("AI Conversation")
-conversation_key = "conversation_text_area"
-conversation = st.text_area("Conversation", "", height=200, key=f"{conversation_key}_main")
-
 # Gather planting information from the farmer
 st.write("\nPlease provide some information about your farming plans:")
 location = st.text_input("Enter your location: ")
@@ -100,7 +94,6 @@ if st.button("Submit"):
     else:
         try:
             start_date = datetime.datetime.strptime(start_date_input, "%Y-%m-%d").date()
-            conversation += "\nUser: Thank you for providing the information."
 
             # Interpolate farmer's planting information into the tasks descriptions
             planting_info_task.interpolate_inputs({"plant": crop})
@@ -111,20 +104,19 @@ if st.button("Submit"):
             farming_itinerary_task.interpolate_inputs({"crop": crop, "location": location, "start_date": start_date})
 
             # Execute the farming crew
-            conversation += "\nAI: Executing farming tasks..."
+            st.write("\nExecuting farming tasks...")
             output = farming_crew.kickoff()
 
             # Print output
             if output:
-                conversation += "\nAI: Farming calendar generated successfully."
+                st.success("\nFarming calendar generated successfully.")
                 
                 # Display farming itinerary
                 farming_itinerary = farming_itinerary_task.output
-                conversation += f"\nAI: Farming Itinerary: {farming_itinerary}"
+                st.subheader("Farming Itinerary:")
+                st.write(farming_itinerary)
             else:
-                conversation += "\nAI: There was an error generating the farming calendar. Please try again later."
+                st.error("\nThere was an error generating the farming calendar. Please try again later.")
         except ValueError:
-            conversation += "\nAI: Invalid date format. Please enter the date in YYYY-MM-DD format."
-
-st.text_area("Conversation", conversation, height=200, key=f"{conversation_key}_second")
+            st.error("Invalid date format. Please enter the date in YYYY-MM-DD format.")
 
