@@ -132,6 +132,7 @@ if st.button("Submit"):
             # Display farming itinerary
             farming_itinerary = farming_itinerary_task.output
             st.subheader("Farming Itinerary:")
-            st.markdown(f"```\n{farming_itinerary}\n```")
+            st.write(farming_itinerary)  # Display farming itinerary as plain text
         except ValueError:
             st.error("Invalid input. Please enter valid values.")
+
