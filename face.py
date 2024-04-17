@@ -5,7 +5,7 @@ from crewai import Agent, Task, Crew, Process
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 # Define Google LLM for interacting with Google Calendar
-llm = ChatGoogleGenerativeAI(model="gemini-pro", verbose=True, temperature=0.6, google_api_key="AIzaSyDjITo6JpwACzQKlMCJKuBhHHK8jTQIhBg") #google api key
+llm = ChatGoogleGenerativeAI(model="gemini-pro", verbose=True, temperature=0.6, google_api_key="") #google api key
 
 # Define Farmer Agent
 farmer_agent = Agent(
@@ -85,7 +85,8 @@ st.title("Farming Assistant")
 
 # Conversation window
 st.subheader("AI Conversation")
-conversation = st.text_area("Conversation", "", height=200)
+conversation_key = "conversation_text_area"
+conversation = st.text_area("Conversation", "", height=200, key=conversation_key)
 
 # Gather planting information from the farmer
 st.write("\nPlease provide some information about your farming plans:")
@@ -125,4 +126,4 @@ if st.button("Submit"):
         except ValueError:
             conversation += "\nAI: Invalid date format. Please enter the date in YYYY-MM-DD format."
 
-st.text_area("Conversation", conversation, height=200)
+st.text_area("Conversation", conversation, height=200, key=conversation_key)
