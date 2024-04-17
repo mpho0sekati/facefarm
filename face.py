@@ -130,7 +130,7 @@ if st.button("Submit"):
                     st.success("Task completed successfully!")
             
             # Display farming itinerary
-            farming_itinerary = farming_itinerary_task.output
+            farming_itinerary = farming_itinerary_task.output.output  # Extract the output string from TaskOutput
             st.subheader("Farming Itinerary:")
             st.write("Here is your farming itinerary:")
             formatted_itinerary = "\n".join(textwrap.wrap(farming_itinerary, width=70))  # Wrap text
