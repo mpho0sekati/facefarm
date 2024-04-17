@@ -4,7 +4,7 @@ from crewai import Agent, Task, Crew, Process
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 # Define Google LLM for interacting with Google Calendar
-llm = ChatGoogleGenerativeAI(model="gemini-pro", verbose=True, temperature=0.6, google_api_key="AIzaSyAWYWjiZMq4gAgQMsoOW6fCLIRLs9nYPGU") #google api key
+llm = ChatGoogleGenerativeAI(model="gemini-pro", verbose=True, temperature=0.6, google_api_key="AIzaSyDjITo6JpwACzQKlMCJKuBhHHK8jTQIhBg") #google api key
 
 # Define Farmer Agent
 farmer_agent = Agent(
@@ -122,12 +122,12 @@ if st.button("Submit"):
 
             # Execute the farming crew
             st.write("Executing farming tasks...")
-            with st.spinner("Executing farming tasks..."):
-                for _ in range(5):  # Simulating task execution with a loop
-                    st.write(":seedling:")  # Progress bar emoji
-                    st.rerun()  # Refresh the app to display the progress bar emoji
-                    st.sleep(1)  # Add a short delay for demonstration purposes
-            st.success("All tasks completed!")  # Display success message after completing all tasks
+
+            # Execute each task sequentially
+            for task in farming_crew.tasks:
+                st.write(f"Executing task: {task.description}")
+                task.execute()
+                st.success("Task completed successfully!")
             
             # Display farming itinerary
             farming_itinerary = farming_itinerary_task.output
@@ -135,6 +135,3 @@ if st.button("Submit"):
             st.markdown(f"```\n{farming_itinerary}\n```")
         except ValueError:
             st.error("Invalid input. Please enter valid values.")
-
-
-
