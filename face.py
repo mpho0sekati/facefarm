@@ -1,5 +1,6 @@
 import streamlit as st
 import datetime
+import textwrap
 from crewai import Agent, Task, Crew, Process
 from langchain_google_genai import ChatGoogleGenerativeAI
 
@@ -132,6 +133,7 @@ if st.button("Submit"):
             farming_itinerary = farming_itinerary_task.output
             st.subheader("Farming Itinerary:")
             st.write("Here is your farming itinerary:")
-            st.write(farming_itinerary)  # Display farming itinerary as plain text
+            formatted_itinerary = "\n".join(textwrap.wrap(farming_itinerary, width=70))  # Wrap text
+            st.write(formatted_itinerary)  # Display farming itinerary as plain text
         except ValueError:
             st.error("Invalid input. Please enter valid values.")
