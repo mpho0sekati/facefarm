@@ -114,7 +114,7 @@ if st.button("Submit"):
                 # Display farming itinerary
                 farming_itinerary = farming_itinerary_task.output
                 st.subheader("Farming Itinerary:")
-                st.write(farming_itinerary)
+                st.markdown(f"```\n{farming_itinerary}\n```")
             else:
                 st.error("There was an error generating the farming calendar. Please try again later.")
         except ValueError:
