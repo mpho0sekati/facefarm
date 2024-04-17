@@ -80,21 +80,21 @@ farming_crew = Crew(
 )
 
 # Streamlit App
-st.title("Farming Assistant")
+st.title("AbutiSpinach: Your Farming Assistant")
+
+# Welcome message
+st.write("Welcome to AbutiSpinach! Your go-to assistant for all your farming needs.")
 
 # Gather planting information from the farmer
-st.write("\nPlease provide some information about your farming plans:")
-location = st.text_input("Enter your location: ")
-crop = st.text_input("Enter the crop you want to plant: ")
-start_date_input = st.text_input("Enter the date you want to start planting (YYYY-MM-DD): ")
+location = st.text_input("Enter your location:")
+crop = st.text_input("Enter the crop you want to plant:")
+start_date = st.date_input("Enter the date you want to start planting:")
 
 if st.button("Submit"):
-    if not location or not crop or not start_date_input:
+    if not location or not crop or not start_date:
         st.error("Please fill out all fields.")
     else:
         try:
-            start_date = datetime.datetime.strptime(start_date_input, "%Y-%m-%d").date()
-
             # Interpolate farmer's planting information into the tasks descriptions
             planting_info_task.interpolate_inputs({"plant": crop})
             farming_advice_task.interpolate_inputs({"crop": crop, "location": location, "start_date": start_date})
@@ -104,19 +104,20 @@ if st.button("Submit"):
             farming_itinerary_task.interpolate_inputs({"crop": crop, "location": location, "start_date": start_date})
 
             # Execute the farming crew
-            st.write("\nExecuting farming tasks...")
+            st.write("Executing farming tasks...")
             output = farming_crew.kickoff()
 
             # Print output
             if output:
-                st.success("\nFarming calendar generated successfully.")
+                st.success("Farming calendar generated successfully.")
                 
                 # Display farming itinerary
                 farming_itinerary = farming_itinerary_task.output
                 st.subheader("Farming Itinerary:")
                 st.write(farming_itinerary)
             else:
-                st.error("\nThere was an error generating the farming calendar. Please try again later.")
+                st.error("There was an error generating the farming calendar. Please try again later.")
         except ValueError:
-            st.error("Invalid date format. Please enter the date in YYYY-MM-DD format.")
+            st.error("Invalid input. Please enter valid values.")
+
 
