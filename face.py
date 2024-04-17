@@ -130,10 +130,9 @@ if st.button("Submit"):
                     st.success("Task completed successfully!")
             
             # Display farming itinerary
-            farming_itinerary = farming_itinerary_task.output.output  # Extract the output string from TaskOutput
+            farming_itinerary = farming_itinerary_task.output  # Get the output object
             st.subheader("Farming Itinerary:")
             st.write("Here is your farming itinerary:")
-            formatted_itinerary = "\n".join(textwrap.wrap(farming_itinerary, width=70))  # Wrap text
-            st.write(formatted_itinerary)  # Display farming itinerary as plain text
+            st.write(farming_itinerary)  # Display farming itinerary as plain text
         except ValueError:
             st.error("Invalid input. Please enter valid values.")
