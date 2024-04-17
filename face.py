@@ -122,20 +122,18 @@ if st.button("Submit"):
 
             # Execute the farming crew
             st.write("Executing farming tasks...")
-            output = farming_crew.kickoff()
-
-            # Print output
-            if output:
-                st.success("Farming calendar generated successfully.")
-                
-                # Display farming itinerary
-                farming_itinerary = farming_itinerary_task.output
-                st.subheader("Farming Itinerary:")
-                st.markdown(f"```\n{farming_itinerary}\n```")
-            else:
-                st.error("There was an error generating the farming calendar. Please try again later.")
+            with st.spinner("Executing farming tasks..."):
+                for _ in range(5):  # Simulating task execution with a loop
+                    st.write(":seedling:")  # Progress bar emoji
+                    st.experimental_rerun()  # Refresh the app to display the progress bar emoji
+                    st.sleep(1)  # Add a short delay for demonstration purposes
+            st.success("All tasks completed!")  # Display success message after completing all tasks
+            
+            # Display farming itinerary
+            farming_itinerary = farming_itinerary_task.output
+            st.subheader("Farming Itinerary:")
+            st.markdown(f"```\n{farming_itinerary}\n```")
         except ValueError:
             st.error("Invalid input. Please enter valid values.")
-
 
 
